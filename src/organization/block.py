@@ -134,22 +134,44 @@ class Block:
             else:
                 break
 
+        previous = None
+        for child in block._children:
+            child.parent = block
+            child.previous = previous
+            if previous is not None:
+                previous.next = child
+            previous = child
+
         return block
 
     def __init__(self):
         self._children = []
         self.start_at = -1
         self.indentation = ""
+        self.parent = None
+        self.previous = None
+        self.next = None
 
     def __len__(self):
         return len(self._children)
 
     def __getitem__(self, item):
         lines = list(self._children)
-        block = Block()
-        block.start_at = self.start_at
-        block._children = lines
-        return block._children[item]
+        line = None
+        try:
+            line = lines[item]
+        except IndexError:
+            pass
+
+        if line and isinstance(line, str):
+            block = Block()
+            block.start_at = self.start_at
+            block.parent = self
+            block._children = lines
+        else:
+            block = self
+
+        return self._children[item]
 
     def __iter__(self):
         for child in self._children:
@@ -173,14 +195,14 @@ class Block:
 
         """
         if isinstance(compared_to, Block):
-            compared_to = compared_to.display()
+            compared_to = compared_to.display(indentation=False)
         elif isinstance(compared_to, str):
             pass
         else:
             raise TypeError("cannot compare {} to {}".format(
                     self, compared_to))
 
-        return self.display() == compared_to
+        return self.display(indentation=False) == compared_to
 
     @property
     def nb_lines(self):
@@ -203,21 +225,25 @@ class Block:
         """Return the line where the block should end."""
         return self.start_at + self.nb_lines
 
-    def display(self, show_lines=False):
+    def display(self, show_lines=False, indentation=True):
         """Display this block and its children."""
         res = ""
         i = 0
+        nb_lines = self.nb_lines
         for line in self:
-            if isinstance(line, str):
-                if self.start_at + i != 0:
-                    res += "\n"
+            if i != 0 and nb_lines > 1:
+                res += "\n"
 
+            if isinstance(line, str):
                 if show_lines:
                     res += str(self.start_at + i + 1).rjust(2) + " "
 
-                res += self.indentation + line
+                if indentation:
+                    res += self.indentation
+
+                res += line
             else:
-                res += line.display(show_lines=show_lines)
+                res += line.display(show_lines=show_lines, indentation=indentation)
 
             i += 1
 

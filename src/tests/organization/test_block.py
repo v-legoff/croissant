@@ -54,3 +54,14 @@ class BlockTest(unittest.TestCase):
         block = Block.build(content)
         self.assertEqual(len(block), 5)
         self.assertEqual(block[0], "We now try a different content")
+        self.assertEqual(block[3][2], "Let's try it")
+
+    def test_hierarchy(self):
+        """Test the hierarchy consistence, parent, children and siblings."""
+        content = CONTENT_WITH_INDENTATION
+        block = Block.build(content)
+        self.assertIs(block[0].parent, block)
+        self.assertIs(block[1], block[0].next)
+        self.assertIs(block[1].previous, block[0])
+        self.assertIs(block[3][0].next, block[3][1])
+        self.assertIs(block[3][0], block[3][1].previous)

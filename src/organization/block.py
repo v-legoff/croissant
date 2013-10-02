@@ -117,7 +117,9 @@ class Block:
 
             line_indentation = Block.get_indentation_from_line(line,
                     indentation)
-            if line_indentation == indentation:
+            if line.strip() == "":
+                i += 1
+            elif line_indentation == indentation:
                 sub_block = Block()
                 line = line[len(indentation):]
                 sub_block._children.append(line)
@@ -167,9 +169,8 @@ class Block:
             block = Block()
             block.start_at = self.start_at
             block.parent = self
-            block._children = lines
-        else:
-            block = self
+            block._children = [line]
+            return block
 
         return self._children[item]
 
@@ -248,3 +249,22 @@ class Block:
             i += 1
 
         return res
+
+    def insert(self, child):
+        """Insert the child at the beginnning of the block.
+
+        If the child is a block itself, the 'start_at' attribute is
+        set to the new child.  If not, the start_at is simply decreased.
+
+        """
+        if isinstance(child, Block):
+            start_at = child.start_at
+        else:
+            start_at = self.start_at - 1
+
+        self._children.insert(0, child)
+        self.start_at = start_at
+
+    def append(self, child):
+        """Append a child."""
+        self._children.append(child)

@@ -6,10 +6,20 @@
 Welcome to Croissant's documentation!
 =====================================
 
+Croissant is a library for testing your application using a
+language.  If you are new to Behavior-Driven development and
+want to know how it works and why adopt it, you should read the
+:doc:`bdd`.  If you
+already have a good idea of what it is and want to know how to use
+croissant itself, you can read the :doc:`tutorial` directly.
+
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+
+   Tutorial <tutorial/index>
+   Full documentation <documentation/index>
 
 
 

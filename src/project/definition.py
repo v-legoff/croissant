@@ -49,7 +49,7 @@ class Definition:
         self.stories = {}
         self.classes = {}
 
-    def load(self, root=None, first=True, min_depth=1):
+    def load(self, root):
         """Load the steps and stories in a directory.
 
         The stories are supposed to be stored in files with the '.feature'
@@ -82,20 +82,32 @@ class Definition:
           Then the root directory will be 'example'.
 
         """
-        directory = root or os.getcwd()
         # If the root directory only contains sub-directory
         if all(os.path.isdir(os.path.join(root, name)) for name in \
                 os.listdir(root)):
             min_depth = 2
+        else:
+            min_depth = 1
 
+        self.load_directory(root, min_depth)
+
+    def load_directory(self, directory, min_depth):
+        """Recursively load a directory and its content.
+
+        This method is automatically called by the 'load' method and
+        should not be called directly by the user.  Its role is to be
+        consistent with the structure of the root directory (which is
+        analyzed in the 'load' method).
+
+        """
         for file in os.listdir(directory):
-            path = root and os.path.join(root, file) or file
-            if os.path.isdir(os.path.join(directory, file)):
-                self.load(path, first=False, min_depth=min_depth)
-            elif file.endswith(".py"):
+            path = os.path.join(directory, file)
+            if file.endswith(".py"):
                 self.load_steps(path, min_depth)
             elif file.endswith(".feature"):
                 self.load_stories(path, min_depth)
+            elif os.path.isdir(path):
+                self.load_directory(path, min_depth)
 
     def load_stories(self, path, min_depth):
         with open(path, "r") as file:

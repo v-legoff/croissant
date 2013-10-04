@@ -1,4 +1,5 @@
 # Copyright (c) 2013 LE GOFF Vincent
+# Copyright (c) 2013 LE GOFF Vincent
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,6 +29,7 @@
 
 """Module containing the Scenario class, described below."""
 
+from language.exceptions.syntax import *
 from language.keyword import keywords
 from organization.block import Block
 
@@ -90,15 +92,14 @@ class Scenario:
 
     def extract_title(self, block):
         """Extract the title from a block."""
-        title = block[0].display(indentation=False)
+        block = block[0]
+        title = block.display(indentation=False)
         keyword = keywords["scenario.title"]
         symbol = "en"
         title = keyword.parse(symbol, title)
         if title is None:
-            raise MissingKeyword("the {} keyword should be the " \
-                    "first line of the scenario ({}:{})".format(
-                    repr(keyword.languages[symbol]),
-                    repr(scenario.path), block.start_at))
+            path = self.path
+            raise MissingKeyword(path, block.start_at + 1, symbol, keyword)
 
         self.title = title
 
@@ -107,10 +108,9 @@ class Scenario:
         given = keywords["scenario.given"]
         context = given.parse(symbol, block[0].display(indentation=False))
         if context is None:
-            raise MissingKeyword("the {} keyword should be the " \
-                    "first line of the scenario ({}:{})".format(
-                    repr(keyword.languages[symbol]),
-                    repr(scenario.path), block.start_at))
+            path = self.path
+            line = block.start_at + 1
+            raise MissingKeyword(path, line, symbol, keyword)
 
         contexts = [context]
         still = True
@@ -129,36 +129,33 @@ class Scenario:
             else:
                 break
 
-
         self.contexts = contexts
 
     def extract_event(self, block, symbol="en"):
         """Extract the contexts from a block."""
         block = block[len(self.contexts)]
+        line = 1 + block.start_at
         keyword = keywords["scenario.when"]
-        event = keyword.parse(symbol, block[0].display(indentation=False))
+        event = keyword.parse(symbol, block.display(indentation=False))
         if event is None:
-            raise MissingKeyword("the {} keyword should be the " \
-                    "first line of the scenario ({}:{})".format(
-                    repr(keyword.languages[symbol]),
-                    repr(scenario.path), block.start_at))
+            path = self.path
+            raise MissingKeyword(path, line, symbol, keyword)
 
         self.event = event
 
     def extract_postconditions(self, block, symbol="en"):
         """Extract the postconditions of a block."""
-        block = block[len(self.contexts) + 1]
+        no_line = len(self.contexts) + 2 + block.start_at
         keyword = keywords["scenario.then"]
-        condition = keyword.parse(symbol, block[0].display(indentation=False))
+        ct_block = block[len(self.contexts) + 1]
+        condition = keyword.parse(symbol, ct_block.display(indentation=False))
         if condition is None:
-            raise MissingKeyword("the {} keyword should be the " \
-                    "first line of the scenario ({}:{})".format(
-                    repr(keyword.languages[symbol]),
-                    repr(scenario.path), block.start_at))
+            path = self.path
+            raise MissingKeyword(path, no_line, symbol, keyword)
 
         conditions = [condition]
         still = True
-        i = 1
+        i = 2 + len(self.contexts)
         while still:
             try:
                 line = block[i].display(indentation=False)
@@ -171,6 +168,8 @@ class Scenario:
                 conditions.append(condition)
                 i += 1
             else:
-                break
+                path = self.path
+                no_line = i + 1 + block.start_at
+                raise MissingKeyword(path, no_line, symbol, keyword)
 
         self.postconditions = conditions

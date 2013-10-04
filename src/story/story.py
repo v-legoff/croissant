@@ -28,6 +28,7 @@
 
 """Module containing the Story class, described below."""
 
+from language.exceptions.syntax import *
 from language.keyword import keywords
 from organization.block import Block
 from story.scenario import Scenario
@@ -90,20 +91,18 @@ class Story:
                     repr(path)))
 
         try:
-            title = block[0]
+            block_title = block[0]
         except IndexError:
             raise MissingKeyword("the {} keyword should be the " \
                     "first line of your {} file".format(
                     repr(keyword.languages[symbol]), repr(file)))
 
         symbol = "en"
-        title = title.display(indentation=False)
+        title = block_title.display(indentation=False)
         keyword = keywords["story.title"]
         story.title = keyword.parse(symbol, title)
         if story.title is None:
-            raise MissingKeyword("the {} keyword should be the " \
-                    "first line of your {} file".format(
-                    repr(keyword.languages[symbol]), repr(file)))
+            raise MissingKeyword(path, block.start_at + 1, symbol, keyword)
 
         # The description should be slightly indented then (2nd block)
         try:

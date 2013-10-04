@@ -6,7 +6,7 @@
 Welcome to Croissant's documentation!
 =====================================
 
-Croissant is a library for testing your application using a
+Croissant is a library for testing your application using a ubiquitous
 language.  If you are new to Behavior-Driven development and
 want to know how it works and why adopt it, you should read the
 :doc:`bdd`.  If you

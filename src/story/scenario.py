@@ -51,6 +51,7 @@ class Scenario:
         self.contexts = []
         self.event = ""
         self.postconditions = []
+        self.start_at = 0
 
     def __repr__(self):
         path = self.father and self.father.path or "[undefined]"
@@ -62,6 +63,11 @@ class Scenario:
         """Return the father's path, if found."""
         return self.father and self.father.path or "[undefined]"
 
+    @property
+    def identifier(self):
+        """Return path:line_no."""
+        return "{}:{}".format(self.path, self.start_at)
+
     @classmethod
     def parse(cls, block, father=None):
         """Parse a block and create the corresponding scenario.
@@ -71,6 +77,7 @@ class Scenario:
 
         """
         scenario = cls("unknown", father)
+        scenario.start_at = block.start_at + 1
         if not block:
             raise ValueError("the block is empty")
 

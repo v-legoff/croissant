@@ -26,33 +26,28 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 
-"""Module containing the base class for a step."""
+"""Module containing the different assertions for step failure."""
 
-from step.exceptions.assertion import *
-from step.meta import StepMeta
+class StepAssertionError(RuntimeError):
 
-class BaseStep(metaclass=StepMeta):
+    """Base exception for a step assertion."""
 
-    """Base class of all steps.
+    def __init__(self, step, message):
+        self.step = step
+        self.message = message
 
-    In order to be a step, a class should inherit from this class (or
-    from a sub-class).  The decorators defined in 'step.functions'
-    should be used to mark a certain method as context (precondition),
-    event or postcondition.  In the postconditions methods, the
-    'assert_*' methods can be called to validate the result of a
-    test.
+    def __str__(self):
+        return "Step {}: {}".format(self.step.croissant_path, self.message)
 
-    """
+    @property
+    def scenario(self):
+        return self.step.scenario
 
-    croissant_path = None
-    contexts = {}
-    events = {}
-    postconditions = {}
 
-    def __init__(self, scenario):
-        self.scenario = scenario
+class EqualAssertionError(StepAssertionError):
 
-    def assertEqual(self, a, b):
-        """Assert a == b."""
-        if a != b:
-            raise EqualAssertionError(self, a, b)
+    """Exception raised when an assertEqual method is False."""
+
+    def __init__(self, step, a, b):
+        message = "{} != {}".format(repr(a), repr(b))
+        StepAssertionError.__init__(self, step, message)

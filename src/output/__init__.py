@@ -26,33 +26,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 
-"""Module containing the base class for a step."""
+"""Package containing the different outputs.
 
-from step.exceptions.assertion import *
-from step.meta import StepMeta
+Each output type is defined inside a module.
 
-class BaseStep(metaclass=StepMeta):
-
-    """Base class of all steps.
-
-    In order to be a step, a class should inherit from this class (or
-    from a sub-class).  The decorators defined in 'step.functions'
-    should be used to mark a certain method as context (precondition),
-    event or postcondition.  In the postconditions methods, the
-    'assert_*' methods can be called to validate the result of a
-    test.
-
-    """
-
-    croissant_path = None
-    contexts = {}
-    events = {}
-    postconditions = {}
-
-    def __init__(self, scenario):
-        self.scenario = scenario
-
-    def assertEqual(self, a, b):
-        """Assert a == b."""
-        if a != b:
-            raise EqualAssertionError(self, a, b)
+"""

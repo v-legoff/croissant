@@ -26,33 +26,26 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 
-"""Module containing the base class for a step."""
+"""Module containing the different exceptions for step errors."""
 
-from step.exceptions.assertion import *
-from step.meta import StepMeta
+class StepError(RuntimeError):
 
-class BaseStep(metaclass=StepMeta):
+    """Base exception for step errors."""
 
-    """Base class of all steps.
-
-    In order to be a step, a class should inherit from this class (or
-    from a sub-class).  The decorators defined in 'step.functions'
-    should be used to mark a certain method as context (precondition),
-    event or postcondition.  In the postconditions methods, the
-    'assert_*' methods can be called to validate the result of a
-    test.
-
-    """
-
-    croissant_path = None
-    contexts = {}
-    events = {}
-    postconditions = {}
-
-    def __init__(self, scenario):
+    def __init__(self, scenario, message):
         self.scenario = scenario
+        self.message = message
 
-    def assertEqual(self, a, b):
-        """Assert a == b."""
-        if a != b:
-            raise EqualAssertionError(self, a, b)
+    def __str__(self):
+        scenario = self.scenario
+        return "Scenario {} in {}: {}".format(scenario.title, scenario.path,
+                message)
+
+class StepNotFound(StepError):
+
+    """Exception raised when a scenario can't be matched to a step."""
+
+    def __init__(self, scenario, expression):
+        message = "cannot find the step corresponding to the expression " \
+                "{}".format(repr(expression))
+        StepError.__init__(self, scenario, message)

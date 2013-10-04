@@ -29,7 +29,7 @@
 import importlib
 import os
 
-from step.base import BaseStep
+from step.exceptions import *
 from story.story import Story
 
 """Module containing the class Definition described Below."""
@@ -141,37 +141,41 @@ class Definition:
         self.classes[id_name] = class_object
 
     def run_story(self, name):
+        """Run the specified story."""
         story = self.stories[name]
-        class_object = self.classes[name]
         for scenario in story.scenarios:
-            # Create the step for this scenario
-            step = class_object()
+            self.run_scenario(name, scenario)
 
-            # Call the contexts
-            for context in scenario.contexts:
-                method_name = self.find_expression(class_object.contexts,
-                        context)
-                getattr(step, method_name)(context)
+    def run_scenario(self, story_name, scenario):
+        """Run the specified scenario."""
+        # Create the step for this scenario
+        class_object = self.classes[story_name]
+        step = class_object(scenario)
 
-            # Call the event
-            method_name = self.find_expression(class_object.events,
-                    scenario.event)
-            getattr(step, method_name)(scenario.event)
+        # Call the contexts
+        for context in scenario.contexts:
+            method_name = self.find_expression(class_object.contexts,
+                    scenario, context)
+            getattr(step, method_name)(context)
 
-            # Call the postconditions
-            for postcondition in scenario.postconditions:
-                method_name = self.find_expression(class_object.postconditions,
-                        postcondition)
-                getattr(step, method_name)(postcondition)
+        # Call the event
+        method_name = self.find_expression(class_object.events,
+                scenario, scenario.event)
+        getattr(step, method_name)(scenario.event)
+
+        # Call the postconditions
+        for postcondition in scenario.postconditions:
+            method_name = self.find_expression(class_object.postconditions,
+                    scenario, postcondition)
+            getattr(step, method_name)(postcondition)
 
     @staticmethod
-    def find_expression(expressions, message):
+    def find_expression(expressions, scenario, message):
         for expression, method_name in expressions.items():
             if expression.search(message):
                 return method_name
 
-        raise ValueError("cannot find the expression for {}".format(
-                repr(message)))
+        raise StepNotFound(scenario, message)
 
     @staticmethod
     def get_base_name(path, min_depth):

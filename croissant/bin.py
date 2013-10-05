@@ -28,17 +28,11 @@
 
 """Module containing the bin functions (executed as entry points)."""
 
-import sys
-
 from croissant.output.console import ConsoleOutput
 
 def launch():
     """Launch the tests with the console output."""
-    if len(sys.argv) < 2:
-        print("You must specify a directory.")
-        sys.exit(1)
-
-    directory = sys.argv[1]
     output = ConsoleOutput()
-    output.load(directory)
+    output.parse_args()
+    output.load()
     output.run()

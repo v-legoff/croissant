@@ -29,6 +29,7 @@
 """Module containing the base class of outputs."""
 
 from abc import *
+import argparse
 import traceback
 
 from croissant.language.exceptions.syntax import LanguageSyntaxError
@@ -50,11 +51,24 @@ class BaseOutput(metaclass=ABCMeta):
         self.failures = []
         self.errors = []
         self.traces = {}
+        self.directory = None
+        self.parser = argparse.ArgumentParser()
+        self.parser.add_argument("directory")
 
-    def load(self, root):
+    def parse_args(self):
+        """Parse the arguments from the argument parser."""
+        args = self.parser.parse_args()
+        self.handle_args(args)
+
+    def handle_args(self, args):
+        """Handle the command-line arguments."""
+        self.directory = args.directory
+
+    def load(self):
         """Load the steps and stories of a given directory."""
+        directory = self.directory
         try:
-            self.set.load(root)
+            self.set.load(directory)
         except LanguageSyntaxError as err:
             self.handle_syntax_error(err)
             sys.exit(1)

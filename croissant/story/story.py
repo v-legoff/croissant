@@ -28,10 +28,10 @@
 
 """Module containing the Story class, described below."""
 
-from language.exceptions.syntax import *
-from language.keyword import keywords
-from organization.block import Block
-from story.scenario import Scenario
+from croissant.language.exceptions.syntax import *
+from croissant.language.keyword import keywords
+from croissant.organization.block import Block
+from croissant.story.scenario import Scenario
 
 class Story:
 

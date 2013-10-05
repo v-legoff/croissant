@@ -30,7 +30,7 @@
 
 import sys
 
-from output.base import BaseOutput
+from croissant.output.base import BaseOutput
 
 class ConsoleOutput(BaseOutput):
 

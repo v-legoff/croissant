@@ -28,5 +28,5 @@
 
 """Package containing the step definitions."""
 
-from step.base import BaseStep
-from step.functions import *
+from croissant.step.base import BaseStep
+from croissant.step.functions import *

@@ -30,8 +30,8 @@
 
 import unittest
 
-from organization.block import Block
-from tests.organization.contents import *
+from croissant.organization.block import Block
+from croissant.tests.organization.contents import *
 
 class BlockTest(unittest.TestCase):
 

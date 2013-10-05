@@ -34,7 +34,7 @@ be described in the documentation.
 
 """
 
-from language.keyword.meta import MetaKeyword
+from croissant.language.keyword.meta import MetaKeyword
 
 class BaseKeyword(metaclass=MetaKeyword):
 

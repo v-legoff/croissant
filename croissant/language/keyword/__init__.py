@@ -28,10 +28,10 @@
 
 """Package containing the keywords and their default translation."""
 
-from language.keyword.meta import keywords
-from language.keyword.scenario_and import ScenarioAndKeyword
-from language.keyword.scenario_given import ScenarioGivenKeyword
-from language.keyword.scenario_then import ScenarioThenKeyword
-from language.keyword.scenario_title import ScenarioTitleKeyword
-from language.keyword.scenario_when import ScenarioWhenKeyword
-from language.keyword.story_title import StoryTitleKeyword
+from croissant.language.keyword.meta import keywords
+from croissant.language.keyword.scenario_and import ScenarioAndKeyword
+from croissant.language.keyword.scenario_given import ScenarioGivenKeyword
+from croissant.language.keyword.scenario_then import ScenarioThenKeyword
+from croissant.language.keyword.scenario_title import ScenarioTitleKeyword
+from croissant.language.keyword.scenario_when import ScenarioWhenKeyword
+from croissant.language.keyword.story_title import StoryTitleKeyword

@@ -28,9 +28,10 @@
 
 import importlib
 import os
+import sys
 
-from step.exceptions import *
-from story.story import Story
+from croissant.step.exceptions import *
+from croissant.story.story import Story
 
 """Module containing the class Definition described Below."""
 
@@ -48,6 +49,7 @@ class Definition:
     def __init__(self):
         self.stories = {}
         self.classes = {}
+        self.path = None
 
     def load(self, root):
         """Load the steps and stories in a directory.
@@ -82,14 +84,17 @@ class Definition:
           Then the root directory will be 'example'.
 
         """
+        self.path = root
+        sys.path.append(root)
+
         # If the root directory only contains sub-directory
         if all(os.path.isdir(os.path.join(root, name)) for name in \
                 os.listdir(root)):
-            min_depth = 2
-        else:
             min_depth = 1
+        else:
+            min_depth = 0
 
-        self.load_directory(root, min_depth)
+        self.load_directory(None, min_depth)
 
     def load_directory(self, directory, min_depth):
         """Recursively load a directory and its content.
@@ -100,17 +105,20 @@ class Definition:
         analyzed in the 'load' method).
 
         """
-        for file in os.listdir(directory):
-            path = os.path.join(directory, file)
+        path = directory and os.path.join(self.path, directory) or self.path
+        for file in os.listdir(path):
+            rel_path = directory and os.path.join(directory, file) or file
+            full_path = os.path.join(path, file)
             if file.endswith(".py"):
-                self.load_steps(path, min_depth)
+                self.load_steps(rel_path, min_depth)
             elif file.endswith(".feature"):
-                self.load_stories(path, min_depth)
-            elif os.path.isdir(path):
-                self.load_directory(path, min_depth)
+                self.load_stories(rel_path, min_depth)
+            elif os.path.isdir(full_path):
+                self.load_directory(rel_path, min_depth)
 
     def load_stories(self, path, min_depth):
-        with open(path, "r") as file:
+        full_path = os.path.join(self.path, path)
+        with open(full_path, "r") as file:
             content = file.read()
 
         story = Story.parse(path, content)

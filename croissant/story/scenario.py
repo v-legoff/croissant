@@ -29,9 +29,9 @@
 
 """Module containing the Scenario class, described below."""
 
-from language.exceptions.syntax import *
-from language.keyword import keywords
-from organization.block import Block
+from croissant.language.exceptions.syntax import *
+from croissant.language.keyword import keywords
+from croissant.organization.block import Block
 
 class Scenario:
 

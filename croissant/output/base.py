@@ -31,9 +31,9 @@
 from abc import *
 import traceback
 
-from language.exceptions.syntax import LanguageSyntaxError
-from project.definition import Definition
-from step.exceptions import *
+from croissant.language.exceptions.syntax import LanguageSyntaxError
+from croissant.project.definition import Definition
+from croissant.step.exceptions import *
 
 class BaseOutput(metaclass=ABCMeta):
 

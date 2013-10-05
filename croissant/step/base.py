@@ -28,8 +28,8 @@
 
 """Module containing the base class for a step."""
 
-from step.exceptions.assertion import *
-from step.meta import StepMeta
+from croissant.step.exceptions.assertion import *
+from croissant.step.meta import StepMeta
 
 class BaseStep(metaclass=StepMeta):
 

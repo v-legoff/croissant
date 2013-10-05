@@ -28,7 +28,7 @@
 
 """Module containing the class for scenario thens then its translations."""
 
-from language.keyword.base import BaseKeyword
+from croissant.language.keyword.base import BaseKeyword
 
 class ScenarioThenKeyword(BaseKeyword):
 

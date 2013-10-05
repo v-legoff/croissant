@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='croissant',
-    version='0.2',
+    version='0.3',
     author="Vincent Le Goff",
     author_email="vincent.legoff.srs@gmail.com",
     packages=[

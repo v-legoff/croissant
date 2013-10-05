@@ -93,7 +93,7 @@ class ConsoleOutput(BaseOutput):
         file = self.file
         failures = self.failures
         if failures:
-            print("\nFailed:", file=file)
+            print("\nFailures:", file=file)
 
         for failure in failures:
             scenario = failure.scenario
@@ -105,7 +105,7 @@ class ConsoleOutput(BaseOutput):
             message = failure.message
             print("\n  Story {} ({})".format(story_title, path), file=file)
             print("  Scenario: {} (line {})".format(title, no_line), file=file)
-            print("  Failed assertion: {}".format(message), file=file)
+            print("  Failure: {}".format(message), file=file)
             print("  Traceback: {}".format(self.get_trace(scenario)),
                     file=file)
 

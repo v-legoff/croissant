@@ -39,3 +39,5 @@ There is also the tool 'croissant.py' that is used as a script to
 test the features of a project.
 
 """
+
+import croissant.bin

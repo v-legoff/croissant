@@ -26,4 +26,19 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 
-"""Package containing the sub-packages and modules for an user project."""
+"""Module containing the bin functions (executed as entry points)."""
+
+import sys
+
+from croissant.output.console import ConsoleOutput
+
+def launch():
+    """Launch the tests with the console output."""
+    if len(sys.argv) < 2:
+        print("You must specify a directory.")
+        sys.exit(1)
+
+    directory = sys.argv[1]
+    output = ConsoleOutput()
+    output.load(directory)
+    output.run()

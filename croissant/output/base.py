@@ -32,8 +32,8 @@ from abc import *
 import traceback
 
 from croissant.language.exceptions.syntax import LanguageSyntaxError
-from croissant.project.definition import Definition
 from croissant.step.exceptions import *
+from croissant.story.story_set import StorySet
 
 class BaseOutput(metaclass=ABCMeta):
 
@@ -45,8 +45,8 @@ class BaseOutput(metaclass=ABCMeta):
     """
 
     def __init__(self):
-        self.definition = Definition()
-        self.stories = self.definition.stories
+        self.set = StorySet()
+        self.stories = self.set.stories
         self.failures = []
         self.errors = []
         self.traces = {}
@@ -54,7 +54,7 @@ class BaseOutput(metaclass=ABCMeta):
     def load(self, root):
         """Load the steps and stories of a given directory."""
         try:
-            self.definition.load(root)
+            self.set.load(root)
         except LanguageSyntaxError as err:
             self.handle_syntax_error(err)
             sys.exit(1)
@@ -71,14 +71,14 @@ class BaseOutput(metaclass=ABCMeta):
         to produce a report.
 
         """
-        story = self.definition.stories[story_name]
+        story = self.set.stories[story_name]
         for scenario in story.scenarios:
             self.run_scenario(story_name, scenario)
 
     def run_scenario(self, story_name, scenario):
         """Run a specific scenario."""
         try:
-            self.definition.run_scenario(story_name, scenario)
+            self.set.run_scenario(story_name, scenario)
         except StepNotFound as err:
             self.failures.append(err)
             self.traces[scenario.identifier] = traceback.format_exc()

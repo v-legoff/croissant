@@ -35,6 +35,5 @@ file structure can be validated by block patterns.
 
 Sub-modules:
     block -- a general block structure
-    pattern -- a block pattern
 
 """

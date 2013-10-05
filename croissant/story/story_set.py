@@ -33,22 +33,26 @@ import sys
 from croissant.step.exceptions import *
 from croissant.story.story import Story
 
-"""Module containing the class Definition described Below."""
+"""Module containing the class StorySet described Below."""
 
-class Definition:
+class StorySet:
 
-    """Class containing a user's definition.
+    """Class containing a set of user's story.
+
+    Usually, an empty story set is created.  Then, stories and steps are
+    loaded from a directory.  You can, however, create story sets that do
+    not use the file system (or not in the same way) to load stories and
+    steps.
 
     It contains:
         steps -- the user's steps
         stories -- the user's stories
-        ...
 
     """
 
     def __init__(self):
         self.stories = {}
-        self.classes = {}
+        self.steps = {}
         self.path = None
 
     def load(self, root):
@@ -110,13 +114,14 @@ class Definition:
             rel_path = directory and os.path.join(directory, file) or file
             full_path = os.path.join(path, file)
             if file.endswith(".py"):
-                self.load_steps(rel_path, min_depth)
+                self.load_step(rel_path, min_depth)
             elif file.endswith(".feature"):
-                self.load_stories(rel_path, min_depth)
+                self.load_story(rel_path, min_depth)
             elif os.path.isdir(full_path):
                 self.load_directory(rel_path, min_depth)
 
-    def load_stories(self, path, min_depth):
+    def load_story(self, path, min_depth):
+        """Load a specific story from a file."""
         full_path = os.path.join(self.path, path)
         with open(full_path, "r") as file:
             content = file.read()
@@ -127,7 +132,14 @@ class Definition:
         id_name = basename and basename + "." + name or name
         self.stories[id_name] = story
 
-    def load_steps(self, path, min_depth):
+    def load_step(self, path, min_depth):
+        """Load a step from a Python file.
+
+        This method loads the module (built from the specified path) and
+        use its content to find non-defined steps.  Parent steps are
+        supposedly NOT loaded.
+
+        """
         dir_name = os.path.dirname(path)
         basename = self.get_base_name(path, min_depth)
         name = os.path.basename(path)[:-3]
@@ -138,7 +150,6 @@ class Definition:
         classes = [value for value in module.__dict__.values() if \
                 getattr(value, "croissant_path", None) == "unknown"]
         if len(classes) == 0:
-            print("Not found")
             return
         elif len(classes) > 1:
             raise ValueError("multiple steps defined in the same file, it seems")
@@ -146,7 +157,7 @@ class Definition:
             class_object = classes[0]
 
         class_object.croissant_path = id_name
-        self.classes[id_name] = class_object
+        self.steps[id_name] = class_object
 
     def run_story(self, name):
         """Run the specified story."""
@@ -157,7 +168,7 @@ class Definition:
     def run_scenario(self, story_name, scenario):
         """Run the specified scenario."""
         # Create the step for this scenario
-        class_object = self.classes[story_name]
+        class_object = self.steps[story_name]
         step = class_object(scenario)
 
         # Call the contexts
@@ -179,6 +190,7 @@ class Definition:
 
     @staticmethod
     def find_expression(expressions, scenario, message):
+        """Find the method name corresponding to the specified expression."""
         for expression, method_name in expressions.items():
             if expression.search(message):
                 return method_name

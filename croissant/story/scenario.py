@@ -117,7 +117,7 @@ class Scenario:
         if context is None:
             path = self.path
             line = block.start_at + 1
-            raise MissingKeyword(path, line, symbol, keyword)
+            raise MissingKeyword(path, line, symbol, given)
 
         contexts = [context]
         still = True

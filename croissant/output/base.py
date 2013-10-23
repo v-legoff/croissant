@@ -30,6 +30,7 @@
 
 from abc import *
 import argparse
+import sys
 import traceback
 
 from croissant.language.exceptions.syntax import LanguageSyntaxError

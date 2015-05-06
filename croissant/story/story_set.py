@@ -26,14 +26,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 
+"""Module containing the class StorySet described below."""
+
 import importlib
 import os
 import sys
 
 from croissant.step.exceptions import *
 from croissant.story.story import Story
-
-"""Module containing the class StorySet described Below."""
 
 class StorySet:
 

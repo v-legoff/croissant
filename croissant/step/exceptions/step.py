@@ -33,13 +33,14 @@ class StepError(RuntimeError):
     """Base exception for step errors."""
 
     def __init__(self, scenario, message):
+        RuntimeError.__init__(self)
         self.scenario = scenario
         self.message = message
 
     def __str__(self):
         scenario = self.scenario
         return "Scenario {} in {}: {}".format(scenario.title, scenario.path,
-                message)
+                self.message)
 
 class StepNotFound(StepError):
 

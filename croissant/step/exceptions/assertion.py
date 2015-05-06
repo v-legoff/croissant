@@ -33,6 +33,7 @@ class StepAssertionError(RuntimeError):
     """Base exception for a step assertion."""
 
     def __init__(self, step, message):
+        RuntimeError.__init__(self)
         self.step = step
         self.message = message
 
@@ -41,6 +42,7 @@ class StepAssertionError(RuntimeError):
 
     @property
     def scenario(self):
+        """Return the current scenario."""
         return self.step.scenario
 
 

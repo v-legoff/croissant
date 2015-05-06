@@ -32,9 +32,13 @@ class Block:
 
     """A block of text built by indentation level.
 
-    A block object is a block of text.  It could contain only one line of text, a few lines of text or even sub-blocks.  If a block is a container, it contains other blocks that may contain only one line of text.
+    A block object is a block of text.  It could contain only
+    one line of text, a few lines of text or even sub-blocks.  If
+    a block is a container, it contains other blocks that may contain
+    only one line of text.
 
-    The block structure is recursively created based on content indentation.  Take for instance this content:
+    The block structure is recursively created based on content
+    indentation.  Take for instance this content:
         <beginning of text>
         Here is a line,
         That is not indented
@@ -209,7 +213,8 @@ class Block:
     def nb_lines(self):
         """Return the number of lines contained in this block.
 
-        This property is recusrive:  each block can contain sub-blocks that can contain sub-sub-blocks ans so on.
+        This property is recusrive:  each block can contain
+        sub-blocks that can contain sub-sub-blocks ans so on.
 
         """
         nb = 0

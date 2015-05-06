@@ -40,6 +40,7 @@ class LanguageSyntaxError(RuntimeError):
     """
 
     def __init__(self, file, line, message):
+        RuntimeError.__init__(self)
         self.file = file
         self.line = line
         self.message = message
